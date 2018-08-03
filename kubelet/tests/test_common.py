@@ -118,7 +118,7 @@ def test_credentials_empty():
     assert creds.headers("https://dummy") is None
 
     scraper = GenericPrometheusCheck('prometheus', {}, {})
-    scraper_config = scraper.create_mixin_configuration()
+    scraper_config = scraper.create_scraper_configuration()
     scraper_config['prometheus_url'] = "https://dummy"
     creds.configure_scraper(scraper_config)
     assert scraper_config['ssl_ca_cert'] is None
@@ -140,7 +140,7 @@ def test_credentials_certificates():
     assert creds.headers("https://dummy") is None
 
     scraper = GenericPrometheusCheck('prometheus', {}, {})
-    scraper_config = scraper.create_mixin_configuration({})
+    scraper_config = scraper.create_scraper_configuration({})
     scraper_config['prometheus_url'] = "https://dummy"
     creds.configure_scraper(scraper_config)
     assert scraper_config['ssl_ca_cert'] == "ca_cert"
@@ -164,7 +164,7 @@ def test_credentials_token_noverify():
     assert creds.headers("http://dummy") is None
 
     scraper = GenericPrometheusCheck('prometheus', {}, {})
-    scraper_config = scraper.create_mixin_configuration()
+    scraper_config = scraper.create_scraper_configuration()
     scraper_config['prometheus_url'] = 'https://dummy'
     creds.configure_scraper(scraper_config)
     assert scraper_config['ssl_ca_cert'] is False
