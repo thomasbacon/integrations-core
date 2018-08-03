@@ -72,22 +72,6 @@ class KubeletCheck(CadvisorPrometheusScraperMixin, GenericPrometheusCheck, Cadvi
         self.cadvisor_scraper_config = self._create_cadvisor_prometheus_scraper(inst)
         self.kubelet_scraper_config = self._create_kubelet_prometheus_scraper(inst)
 
-        self.METRIC_TRANSFORMERS = {
-            'container_cpu_usage_seconds_total': self.container_cpu_usage_seconds_total,
-            'container_fs_reads_bytes_total': self.container_fs_reads_bytes_total,
-            'container_fs_writes_bytes_total': self.container_fs_writes_bytes_total,
-            'container_network_receive_bytes_total': self.container_network_receive_bytes_total,
-            'container_network_transmit_bytes_total': self.container_network_transmit_bytes_total,
-            'container_network_receive_errors_total': self.container_network_receive_errors_total,
-            'container_network_transmit_errors_total': self.container_network_transmit_errors_total,
-            'container_network_transmit_packets_dropped_total': self.container_network_transmit_packets_dropped_total,
-            'container_network_receive_packets_dropped_total': self.container_network_receive_packets_dropped_total,
-            'container_fs_usage_bytes': self.container_fs_usage_bytes,
-            'container_fs_limit_bytes': self.container_fs_limit_bytes,
-            'container_memory_usage_bytes': self.container_memory_usage_bytes,
-            'container_spec_memory_limit_bytes': self.container_spec_memory_limit_bytes
-        }
-
     def _create_kubelet_prometheus_scraper(self, instance):
         kubelet_instance = deepcopy(instance)
         kubelet_instance.update({
@@ -100,7 +84,7 @@ class KubeletCheck(CadvisorPrometheusScraperMixin, GenericPrometheusCheck, Cadvi
                 'kubelet_runtime_operations_errors': 'kubelet.runtime.errors',
             }]
         })
-        scraper_config = self.create_mixin_configuration(kubelet_instance)
+        scraper_config = self.create_scraper_configuration(kubelet_instance)
         return scraper_config
 
     def check(self, instance):
@@ -163,7 +147,7 @@ class KubeletCheck(CadvisorPrometheusScraperMixin, GenericPrometheusCheck, Cadvi
             self.log.debug('processing cadvisor metrics')
             self.process(
                 self.cadvisor_scraper_config,
-                metric_transformers=self.METRIC_TRANSFORMERS
+                metric_transformers=self.CADVISOR_METRIC_TRANSFORMERS
             )
 
         if self.kubelet_scraper_config['prometheus_url']:  # Prometheus

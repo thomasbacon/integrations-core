@@ -33,6 +33,22 @@ class CadvisorPrometheusScraperMixin(object):
         self.fs_usage_bytes = {}
         self.mem_usage_bytes = {}
 
+        self.CADVISOR_METRIC_TRANSFORMERS = {
+            'container_cpu_usage_seconds_total': self.container_cpu_usage_seconds_total,
+            'container_fs_reads_bytes_total': self.container_fs_reads_bytes_total,
+            'container_fs_writes_bytes_total': self.container_fs_writes_bytes_total,
+            'container_network_receive_bytes_total': self.container_network_receive_bytes_total,
+            'container_network_transmit_bytes_total': self.container_network_transmit_bytes_total,
+            'container_network_receive_errors_total': self.container_network_receive_errors_total,
+            'container_network_transmit_errors_total': self.container_network_transmit_errors_total,
+            'container_network_transmit_packets_dropped_total': self.container_network_transmit_packets_dropped_total,
+            'container_network_receive_packets_dropped_total': self.container_network_receive_packets_dropped_total,
+            'container_fs_usage_bytes': self.container_fs_usage_bytes,
+            'container_fs_limit_bytes': self.container_fs_limit_bytes,
+            'container_memory_usage_bytes': self.container_memory_usage_bytes,
+            'container_spec_memory_limit_bytes': self.container_spec_memory_limit_bytes
+        }
+
     def _create_cadvisor_prometheus_scraper(self, instance):
         cadvisor_instance = deepcopy(instance)
         cadvisor_instance.update({
@@ -64,7 +80,7 @@ class CadvisorPrometheusScraperMixin(object):
                 'container_scrape_error'
             ]
         })
-        scraper_config = self.create_mixin_configuration(cadvisor_instance)
+        scraper_config = self.create_scraper_configuration(cadvisor_instance)
         return scraper_config
 
     @staticmethod
