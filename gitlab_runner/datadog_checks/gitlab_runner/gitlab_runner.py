@@ -31,7 +31,6 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
         generic_instances = []
         if instances is not None:
             for instance in instances:
-                print('instance', instance)
                 generic_instances.append(self._create_gitlab_runner_prometheus_instance(instance, init_config))
 
         super(GitlabRunnerCheck, self).__init__(name, init_config, agentConfig, instances=generic_instances)
