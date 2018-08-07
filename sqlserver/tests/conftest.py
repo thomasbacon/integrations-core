@@ -19,6 +19,15 @@ PORT = 1433
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
+def lib_tds_path():
+    """
+    This is definitely ugly but should do the trick most of the times.
+    """
+    if sys.platform == 'darwin':
+        return '/usr/local/lib/libtdsodbc.so'
+    return '/usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so'
+
+
 @pytest.fixture
 def init_config():
     return {
@@ -84,7 +93,7 @@ def instance_docker():
     return {
         'host': '{},1433'.format(HOST),
         'connector': 'odbc',
-        'driver': '/usr/local/lib/libtdsodbc.so',
+        'driver': lib_tds_path(),
         'username': 'sa',
         'password': 'Password123',
         'tags': ['optional:tag1'],
@@ -98,7 +107,7 @@ def sqlserver():
 
     compose_file = os.path.join(HERE, 'compose', 'docker-compose.yaml')
     conn = 'DRIVER={};Server={},{};Database=master;UID=sa;PWD=Password123;'
-    conn = conn.format('/usr/local/lib/libtdsodbc.so', HOST, PORT)
+    conn = conn.format(lib_tds_path(), HOST, PORT)
 
     def condition():
         sys.stderr.write("Waiting for SQLServer to boot...\n")
