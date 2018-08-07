@@ -4,22 +4,22 @@
 
 from copy import deepcopy
 
-from datadog_checks.checks.prometheus import GenericPrometheusCheck
+from datadog_checks.checks.prometheus import PrometheusScraperCheck
 from datadog_checks.errors import CheckException
 
 
-class Istio(GenericPrometheusCheck):
+class Istio(PrometheusScraperCheck):
     MIXER_NAMESPACE = 'istio.mixer'
     MESH_NAMESPACE = 'istio.mesh'
 
     def __init__(self, name, init_config, agentConfig, instances=None):
 
-        # Create instances we can use in GenericPrometheusCheck
+        # Create instances we can use in PrometheusScraperCheck
         generic_instances = None
         if instances is not None:
             generic_instances = self.create_generic_instances(instances)
 
-        # Set up GenericPrometheusCheck with our generic instances
+        # Set up PrometheusScraperCheck with our generic instances
         super(Istio, self).__init__(name, init_config, agentConfig, instances=generic_instances)
 
     def check(self, instance):
@@ -43,7 +43,7 @@ class Istio(GenericPrometheusCheck):
 
     def create_generic_instances(self, instances):
         """
-        Generalize each (single) Istio instance into two GenericPrometheusCheck instances
+        Generalize each (single) Istio instance into two PrometheusScraperCheck instances
         """
         generic_instances = []
 
