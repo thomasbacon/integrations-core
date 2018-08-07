@@ -9,12 +9,12 @@ import urlparse
 import requests
 
 from datadog_checks.errors import CheckException
-from datadog_checks.checks.prometheus import GenericPrometheusCheck
+from datadog_checks.checks.prometheus import PrometheusScraperCheck
 from datadog_checks.config import _is_affirmative
 from datadog_checks.utils.headers import headers
 
 
-class GitlabRunnerCheck(GenericPrometheusCheck):
+class GitlabRunnerCheck(PrometheusScraperCheck):
     """
     Collect Gitlab Runner metrics from Prometheus and validates that the connectivity with Gitlab
     """
@@ -46,12 +46,12 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
 
         try:
             self.process(scraper_config)
-            self.service_check(self.PROMETHEUS_SERVICE_CHECK_NAME, GenericPrometheusCheck.OK, tags=custom_tags)
+            self.service_check(self.PROMETHEUS_SERVICE_CHECK_NAME, PrometheusScraperCheck.OK, tags=custom_tags)
         except requests.exceptions.ConnectionError as e:
             # Unable to connect to the metrics endpoint
             self.service_check(
                 self.PROMETHEUS_SERVICE_CHECK_NAME,
-                GenericPrometheusCheck.CRITICAL,
+                PrometheusScraperCheck.CRITICAL,
                 message="Unable to retrieve Prometheus metrics from endpoint {}: {}".format(endpoint, e.message),
                 tags=custom_tags,
             )
@@ -61,7 +61,7 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
 
     def _create_gitlab_runner_prometheus_instance(self, instance, init_config):
         """
-        Set up the gitlab_runner instance so it can be used in GenericPrometheusCheck
+        Set up the gitlab_runner instance so it can be used in PrometheusScraperCheck
         """
         # Mapping from Prometheus metrics names to Datadog ones
         # For now it's a 1:1 mapping
@@ -121,7 +121,7 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
             if r.status_code != 200:
                 self.service_check(
                     self.MASTER_SERVICE_CHECK_NAME,
-                    GenericPrometheusCheck.CRITICAL,
+                    PrometheusScraperCheck.CRITICAL,
                     message="Got {} when hitting {}".format(r.status_code, url),
                     tags=service_check_tags,
                 )
@@ -133,7 +133,7 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
             # If there's a timeout
             self.service_check(
                 self.MASTER_SERVICE_CHECK_NAME,
-                GenericPrometheusCheck.CRITICAL,
+                PrometheusScraperCheck.CRITICAL,
                 message="Timeout when hitting {}".format(url),
                 tags=service_check_tags,
             )
@@ -141,11 +141,11 @@ class GitlabRunnerCheck(GenericPrometheusCheck):
         except Exception as e:
             self.service_check(
                 self.MASTER_SERVICE_CHECK_NAME,
-                GenericPrometheusCheck.CRITICAL,
+                PrometheusScraperCheck.CRITICAL,
                 message="Error hitting {}. Error: {}".format(url, e.message),
                 tags=service_check_tags,
             )
             raise
         else:
-            self.service_check(self.MASTER_SERVICE_CHECK_NAME, GenericPrometheusCheck.OK, tags=service_check_tags)
+            self.service_check(self.MASTER_SERVICE_CHECK_NAME, PrometheusScraperCheck.OK, tags=service_check_tags)
         self.log.debug("gitlab check succeeded")
