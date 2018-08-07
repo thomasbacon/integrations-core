@@ -10,7 +10,7 @@ import requests
 from six import iteritems, iterkeys
 from six.moves import range
 
-from datadog_checks.checks.prometheus import PrometheusMultiScraperCheck, UnknownFormatError
+from datadog_checks.checks.prometheus import PrometheusScraperCheck, UnknownFormatError
 from datadog_checks.utils.prometheus import parse_metric_family, metrics_pb2
 
 
@@ -51,7 +51,7 @@ GENERIC_PROMETHEUS_INSTANCE = {
 
 @pytest.fixture
 def mocked_prometheus_check():
-    check = PrometheusMultiScraperCheck('prometheus_check', {}, {})
+    check = PrometheusScraperCheck('prometheus_check', {}, {})
     check.log = logging.getLogger('datadog-prometheus.test')
     check.log.debug = mock.MagicMock()
     return check
@@ -64,7 +64,7 @@ def mocked_prometheus_scraper_config(mocked_prometheus_check):
 
 @pytest.fixture
 def p_check():
-    return PrometheusMultiScraperCheck('prometheus_check', {}, {})
+    return PrometheusScraperCheck('prometheus_check', {}, {})
 
 
 @pytest.fixture
@@ -1578,7 +1578,7 @@ def test_health_service_check_ok(mock_get, aggregator, mocked_prometheus_check, 
     check.process(mocked_prometheus_scraper_config)
 
     aggregator.assert_service_check(
-        'ksm.prometheus.health', status=PrometheusMultiScraperCheck.OK, tags=['endpoint:http://fake.endpoint:10055/metrics'], count=1
+        'ksm.prometheus.health', status=PrometheusScraperCheck.OK, tags=['endpoint:http://fake.endpoint:10055/metrics'], count=1
     )
 
 
@@ -1590,7 +1590,7 @@ def test_health_service_check_failing(aggregator, mocked_prometheus_check, mocke
     with pytest.raises(requests.ConnectionError):
         check.process(mocked_prometheus_scraper_config)
     aggregator.assert_service_check(
-        'ksm.prometheus.health', status=PrometheusMultiScraperCheck.CRITICAL, tags=["endpoint:http://fake.endpoint:10055/metrics"], count=1
+        'ksm.prometheus.health', status=PrometheusScraperCheck.CRITICAL, tags=["endpoint:http://fake.endpoint:10055/metrics"], count=1
     )
 
 def test_text_filter_input(mocked_prometheus_check, mocked_prometheus_scraper_config):

@@ -6,7 +6,7 @@ from ..base import AgentCheck
 from ...errors import CheckException
 
 
-class PrometheusMultiScraperCheck(PrometheusMultiScraperMixin, AgentCheck):
+class PrometheusScraperCheck(PrometheusMultiScraperMixin, AgentCheck):
     """
     GenericPrometheusCheck is a class that helps instantiating PrometheusCheck only
     with YAML configurations. As each check has it own states it maintains a map
@@ -21,7 +21,7 @@ class PrometheusMultiScraperCheck(PrometheusMultiScraperMixin, AgentCheck):
         - foo
     """
     def __init__(self, name, init_config, agentConfig, instances=None, default_instances=None, default_namespace=None):
-        super(PrometheusMultiScraperCheck, self).__init__(name, init_config, agentConfig, instances=instances)
+        super(PrometheusScraperCheck, self).__init__(name, init_config, agentConfig, instances=instances)
         self.config_map = {}
         self.default_instances = {} if default_instances is None else default_instances
         self.default_namespace = default_namespace

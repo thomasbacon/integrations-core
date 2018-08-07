@@ -1,4 +1,4 @@
-from datadog_checks.checks.prometheus import PrometheusMultiScraperCheck
+from datadog_checks.checks.prometheus import PrometheusScraperCheck
 
 def test_rate_override():
     endpoint = "none"
@@ -9,7 +9,7 @@ def test_rate_override():
     }
     expected_type_overrides = {"test_rate": "gauge"}
 
-    check = PrometheusMultiScraperCheck('prometheus_check', {}, {}, [instance], default_namespace="foo")
+    check = PrometheusScraperCheck('prometheus_check', {}, {}, [instance], default_namespace="foo")
 
     processed_type_overrides = check.config_map[endpoint]['type_overrides']
     assert expected_type_overrides == processed_type_overrides
@@ -27,11 +27,11 @@ def test_timeout_override():
     }
 
     instance = {'prometheus_url': endpoint, 'namespace': 'default_namespace'}
-    check = PrometheusMultiScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
+    check = PrometheusScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
     assert check.get_scraper_config(instance)['prometheus_timeout'] == 30
 
     instance = {'prometheus_url': endpoint, 'namespace': 'default_namespace', 'prometheus_timeout': 5}
-    check = PrometheusMultiScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
+    check = PrometheusScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
     assert check.get_scraper_config(instance)['prometheus_timeout'] == 5
 
 def test_label_to_hostname_override():
@@ -45,5 +45,5 @@ def test_label_to_hostname_override():
     }
 
     instance = {'prometheus_url': endpoint, 'namespace': 'default_namespace'}
-    check = PrometheusMultiScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
+    check = PrometheusScraperCheck('prometheus_check', {}, {}, [instance], default_instance, default_namespace="foo")
     assert check.get_scraper_config(instance)['label_to_hostname'] == 'node'

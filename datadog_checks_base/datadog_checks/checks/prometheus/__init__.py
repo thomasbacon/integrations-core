@@ -11,7 +11,7 @@ try:
     )
 except ImportError:
     from .mixins import PrometheusFormat, UnknownFormatError
-    from .multi_base_check import PrometheusMultiScraperCheck
+    from .multi_base_check import PrometheusScraperCheck
     from .prometheus_base import PrometheusCheck
     from .base_check import GenericPrometheusCheck
 
@@ -23,5 +23,5 @@ __all__ = [
     'PrometheusCheck',
     'GenericPrometheusCheck',
     'PrometheusScraper',
-    'PrometheusMultiScraperCheck',
+    'PrometheusScraperCheck',
 ]
